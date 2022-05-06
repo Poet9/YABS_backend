@@ -19,21 +19,21 @@ const commentSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    blogId: Number 
+    articleId: Number 
 }, {
     timeStamp: true
 });
 
 //virtual relationship with blog  
-commentSchema.virtual('blog', {
+commentSchema.virtual('blogs', {
     ref: 'Blog',
-    localField: 'blogId',
+    localField: 'articleId',
     foreignField: '_id',
     justOne: true
 });
 
 //virtual relationship with user  
-commentSchema.virtual('author', {
+commentSchema.virtual('users', {
     ref: 'User',
     localField: 'authorId',
     foreignField: '_id',

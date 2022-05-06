@@ -31,13 +31,18 @@ const blogSchema = mongoose.Schema({
 });
 
 //virtual relationship with author
-commentSchema.virtual('author', {
+blogSchema.virtual('users', {
     ref: 'User',
     localField: 'authorId',
     foreignField: '_id',
     justOne: true
 });
-
+// virtual relationship with comments 
+blogSchema.virtual('comments', {
+    ref: 'Comment',
+    localField: '_id',
+    foreignField: 'atricleId'
+});
 const blog = mongoose.model('Blog', blogSchema);
 module.exports = blog;
 
