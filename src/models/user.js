@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
-
+const Comment = require('./comment');
+const Blog = require('./blog');
 
 const userSchema = mongoose.Schema({
     nickname: {
+        type: String,
+        required: true
+    },
+    picture: {
         type: String,
         required: true
     },
@@ -25,7 +30,12 @@ userSchema.virtual('comments', {
     foreignField: 'owner'
 })
 
-
+// delete all comments if user got deleted
+userSchema.pre('remove', async function (next){
+    await Comment.deleteMany({owner: { name: this.nickname, picture: this.picture}});
+    await Blog.deleteMany({authorId: this._id});
+    next();
+});
 
 const User = mongoose.model('User', userSchema);
 

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const Comment = require('./comment');
 const blogSchema = mongoose.Schema({
     title: {
         type: String,
@@ -9,6 +9,11 @@ const blogSchema = mongoose.Schema({
     picture: {
         data: Buffer,
         contentType: String
+    },
+    description: {
+        type: String,
+        required: true,
+        trim: true
     },
     body: {
         required: true,
@@ -21,10 +26,23 @@ const blogSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
-    raters: {
-        type: Number,
-        default: 0
-    },
+    sources: [{
+        source: {
+            type: String,
+            required: true,
+            trim: true
+        }
+    }],
+    raters:[{
+        rater :{
+            type: Number,
+            required: true
+        },
+        note:{
+            type: Number,
+            required: true
+        }
+    }],
     authorId: Number
 }, {
     timeStamp: true
@@ -37,12 +55,18 @@ blogSchema.virtual('users', {
     foreignField: '_id',
     justOne: true
 });
-// virtual relationship with comments 
+//virtual relationship with comments
 blogSchema.virtual('comments', {
     ref: 'Comment',
-    localField: '_id',
-    foreignField: 'atricleId'
+    localField: 'id',
+    foreignField: 'articleId'
 });
+// deleting comments if blog got deleted
+blogSchema.pre('remove', async function (next){
+    await Comment.deleteMany({articleId: this._id});
+    next();
+});
+
 const blog = mongoose.model('Blog', blogSchema);
 module.exports = blog;
 

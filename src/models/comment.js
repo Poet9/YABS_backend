@@ -1,9 +1,9 @@
 const mongoose= require("mongoose");
 
 const commentSchema = new mongoose.Schema({
-    authorName: {
-        type: String,
-        required: true
+    owner: {
+        name: String,
+        picture: String
     },
     body: {
         type: String,
@@ -19,6 +19,10 @@ const commentSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    likers: [{
+        type: Number,
+        required: true
+    }],
     articleId: Number 
 }, {
     timeStamp: true
@@ -35,8 +39,8 @@ commentSchema.virtual('blogs', {
 //virtual relationship with user  
 commentSchema.virtual('users', {
     ref: 'User',
-    localField: 'authorId',
-    foreignField: '_id',
+    localField: 'owner.name',
+    foreignField: 'nickname',
     justOne: true
 });
 
