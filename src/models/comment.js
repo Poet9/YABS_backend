@@ -1,32 +1,45 @@
 const mongoose= require("mongoose");
 
-const commentSchema = new mongoose.Schema({
+const commentSchema = new mongoose.Schema(
+  {
     owner: {
-        name: String,
-        picture: String
+      name: String,
+      picture: String,
     },
     body: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
-    replies: [{
+    replies: [
+      {
         reply: {
-            type: Schema.ObjectId,
-            ref: commentSchema
-        }
-    }],
+          owner: {
+            name: String,
+            picture: String,
+          },
+          body: {
+            type: String,
+            required: true,
+          },
+        },
+      },
+    ],
     likes: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
-    likers: [{
+    likers: [
+      {
         type: Number,
-        required: true
-    }],
-    articleId: Number 
-}, {
-    timeStamp: true
-});
+        required: true,
+      },
+    ],
+    articleId: Number,
+  },
+  {
+    timeStamp: true,
+  }
+);
 
 //virtual relationship with blog  
 commentSchema.virtual('blogs', {

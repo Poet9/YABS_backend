@@ -1,12 +1,35 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
-require('./db/mongoose');
-const userRouter = require('./routers/userRouter');
-const blogRouter = require('./routers/blogRouter');
-const commentRouter = require('./routers/commentRouter');
-
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUiExpress = require("swagger-ui-express");
+require("./db/mongoose");
+const userRouter = require("./routers/userRouter");
+const blogRouter = require("./routers/blogRouter");
+const commentRouter = require("./routers/commentRouter");
+// port
+const PORT = 3000;
+// swagger options
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "YABS API",
+      version: "1.0.0",
+      description: "yet another blog site API",
+    },
+    servers: [
+      {
+        url: `http://127.0.0.1:3000`,
+      },
+    ],
+  },
+  apis: ["./routers/*.js"],
+};
+const specs = swaggerJsdoc(options);
 const app = express();
+app.use("/api-docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+// cors params
 app.use(cors({
    origin: process.env.FRONTENDURL || '*',
    allowedHeaders: ['content-type, Accept'],

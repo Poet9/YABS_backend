@@ -1,22 +1,76 @@
 const express = require('express');
 const Blog = require('../models/blog');
 const Comment = require('../models/comment');
-const auth = require("../auth/auth");
-const blog = require('../models/blog');
+const { auth } = require("../auth/auth");
+const blog = require("../models/blog");
 
-const router = express.Router({strict: true});
-
-// creating an article 
+const router = express.Router({ strict: true });
+/**
+ * @swagger
+ * components:
+ *    schemas:
+ *       Blog:
+ *          type: object
+ *          required:
+ *             - title
+ *             - picture
+ *             - description
+ *             - body
+ *             - hashtags
+ *          properties:
+ *             title:
+ *                type: String
+ *                description:  title
+ *             picture:
+ *                type: Buffer
+ *                description: description
+ *             description:
+ *                type: String
+ *                description: description
+ *             body:
+ *               type: String
+ *               description: description
+ *             hashtags:
+ *                type: array
+ *                description: description
+ *             authorId:
+ *                type: Number
+ *                description: description
+ *          example:
+ *             title: dsfvuhsbdvkuv
+ *             description: sldivuhqsifvubsdv
+ *             body: qsdoifhqsofiqzpsoif hazpofhqsmdofhqepsudfl ub
+ *             authorId : 63546549865034
+ *             hashtags: [ 'lsiwdufbmsidvb']
+ *             picture: 'https://google.com/logo'
+ */
+// creating an article
+/**
+ * @swagger
+ * /api/blogs:
+ *    post:
+ *    summary: write an article
+ *    responses:
+ *       201:
+ *          description: article created successfully
+ *          constent:
+ *             application/json:
+ *             schemas
+ *             type: object
+ *             items:
+ *                $ref: '#/components/schemas/Blog'
+ *
+ */
 // this request needs : you be logged in and respect the model
-router.post('/', auth, async (req, res)=>{
-    const article = new Blog({...req.body, owner: req.user._id});
-    try {
-       await article.save();
-       res.status(201).send(article);
-    } catch(e){
-       res.status(400).send({error: e.message});
-    }
- });
+router.post("/", auth, async (req, res) => {
+  const article = new Blog({ ...req.body, owner: req.user._id });
+  try {
+    await article.save();
+    res.status(201).send(article);
+  } catch (e) {
+    res.status(400).send({ error: "Not authorised" });
+  }
+});
  // get many blogs 
  // this request needs no conditioning
 router.get('/', async (req, res)=>{
