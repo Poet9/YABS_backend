@@ -1,19 +1,18 @@
 const express = require('express');
 const User = require('../models/user');
-const { auth } = require('../auth/auth');
-const {isItAuth} = require('../auth/auth');
+const { auth } = require("../auth/auth");
 
-const router = new express.Router({strict: true});
+const router = new express.Router({ strict: true });
 
 // creating a user (this variable will come directly from the auth0 API)
-router.post('/', isItAuth, async (req, res)=>{
-   try {
-      const user = new User({...req.body});
-      await user.save();
-      res.status(201).send(user);
-   } catch(e){
-      res.status(400).send({error: e.message});
-   }
+router.post("/", auth, async (req, res) => {
+  try {
+    const user = new User({ ...req.body });
+    await user.save();
+    res.status(201).send(user);
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
 });
 // getting a user (prov)
 router.get('/:id', auth, async(req, res)=>{
@@ -55,7 +54,7 @@ router.delete('/:id', auth, async(req, res)=>{
          await req.user.remove();
          res.send({res: 'user deleted successfully.'});
       }
-      res.status(200).send(/**user**/)
+      res.status(200).send(/**user**/ "done");
    } catch(e){
       res.status(401).send({error: e.message});
    }
