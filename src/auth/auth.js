@@ -1,5 +1,6 @@
-const { response } = require("../app");
-const tokenEndpoint = new URL(`${process.env.AUTH_ISSUER}oauth/token`);
+const User = require("../models/user");
+
+const tokenEndpoint = new URL(`${process.env.AUTH_ISSUER}/oauth/token`);
 
 const auth = async (req, res, next) => {
   console.log({ authorisation: "this is from auth to make sure it's working" });
@@ -21,9 +22,10 @@ const auth = async (req, res, next) => {
     mode: "cors",
   })
     .then((response) => {
-      console.log(response);
-      next();
+      req.oauth = response.data;
+      return User.find({ email: req.oauth.user?.email });
     })
+    .then((data) => (req.user = data))
     .catch((e) => res.status(403).send({ error: e.message }));
 };
 
